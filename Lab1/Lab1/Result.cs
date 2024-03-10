@@ -1,4 +1,6 @@
-﻿namespace Lab1;
+﻿using System.Text;
+
+namespace Lab1;
 
 public class Result
 {
@@ -35,13 +37,23 @@ public class Result
         return result;
     }
 
-    public void printResult()
+    public string printResult()
     {
+        StringBuilder text = new StringBuilder();
+
         Console.WriteLine("===========Result===========");
+
+        text.AppendLine("Total value: " + totalValue);
+        text.AppendLine("Total weight: " + totalWeight);
+        text.AppendLine("======Selected items======");
+
         foreach (var item in result)
         {
             Console.WriteLine(item + " | ratio: "+item.Ratio);
+            text.AppendLine(item + " | ratio: " + item.Ratio);
         }
         Console.WriteLine("Total value: {0} | Total weight: {1}",totalValue,totalWeight);
+
+        return text.ToString();
     }
 }

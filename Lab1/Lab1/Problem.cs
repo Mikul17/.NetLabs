@@ -1,10 +1,13 @@
-﻿namespace Lab1;
+﻿using System.Text;
+
+namespace Lab1;
 
 public class Problem
 {
     private int n;
     private int seed;
     private List<Item> items;
+    private StringBuilder text;
 
     public Problem(int n, int seed)
     {
@@ -12,6 +15,7 @@ public class Problem
         this.seed = seed;
         items = new List<Item>();
         generateItems();
+        text= new StringBuilder();
     }
 
     public Problem(List<Item> items)
@@ -19,6 +23,7 @@ public class Problem
         this.n = items.Count;
         this.items = items;
         this.seed = 0;
+        text = new StringBuilder();
     }
 
     private void generateItems()
@@ -39,6 +44,16 @@ public class Problem
         }
     }
 
+    public string listItemsText()
+    {
+        text = new StringBuilder();
+        foreach (var item in items)
+        {
+            text.AppendLine(item + " | ratio: "+item.Ratio);
+        }
+        return text.ToString();
+    }   
+
     public Result solve(int capacity)
     {
         Result result = new Result();
@@ -51,6 +66,7 @@ public class Problem
         sortedItems.Sort((a,b) => b.Ratio.CompareTo(a.Ratio));
         
         Console.WriteLine("===========Sorted list===========");
+        
         foreach (var item in sortedItems)
         {
             Console.WriteLine(item + " | ratio: "+ item.Ratio);
