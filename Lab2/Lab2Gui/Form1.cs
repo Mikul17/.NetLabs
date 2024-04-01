@@ -69,6 +69,7 @@ namespace Lab2
             type = "";
             dateTime = new DateTime();
             onlyActive = false;
+            selectedDate = null;
         }
         private void resetChoices()
         {
