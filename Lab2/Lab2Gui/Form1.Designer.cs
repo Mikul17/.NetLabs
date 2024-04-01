@@ -31,6 +31,9 @@
         private void InitializeComponent()
         {
             splitContainer1 = new SplitContainer();
+            page_counter = new Label();
+            previous_page_button = new Button();
+            next_page_button = new Button();
             Only_active = new CheckBox();
             clearButton = new Button();
             searchButton = new Button();
@@ -69,6 +72,9 @@
             // splitContainer1.Panel1
             // 
             splitContainer1.Panel1.BackColor = Color.FromArgb(87, 96, 100);
+            splitContainer1.Panel1.Controls.Add(page_counter);
+            splitContainer1.Panel1.Controls.Add(previous_page_button);
+            splitContainer1.Panel1.Controls.Add(next_page_button);
             splitContainer1.Panel1.Controls.Add(Only_active);
             splitContainer1.Panel1.Controls.Add(clearButton);
             splitContainer1.Panel1.Controls.Add(searchButton);
@@ -89,11 +95,42 @@
             splitContainer1.SplitterDistance = 267;
             splitContainer1.TabIndex = 1;
             // 
+            // page_counter
+            // 
+            page_counter.AutoSize = true;
+            page_counter.Font = new Font("Yu Gothic UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 238);
+            page_counter.ForeColor = Color.White;
+            page_counter.Location = new Point(12, 9);
+            page_counter.Name = "page_counter";
+            page_counter.Size = new Size(197, 30);
+            page_counter.TabIndex = 19;
+            page_counter.Text = "Current page/Pages";
+            // 
+            // previous_page_button
+            // 
+            previous_page_button.Location = new Point(14, 571);
+            previous_page_button.Name = "previous_page_button";
+            previous_page_button.Size = new Size(75, 23);
+            previous_page_button.TabIndex = 18;
+            previous_page_button.Text = "Previous";
+            previous_page_button.UseVisualStyleBackColor = true;
+            previous_page_button.Click += PrevPageButtonClick;
+            // 
+            // next_page_button
+            // 
+            next_page_button.Location = new Point(99, 571);
+            next_page_button.Name = "next_page_button";
+            next_page_button.Size = new Size(75, 23);
+            next_page_button.TabIndex = 17;
+            next_page_button.Text = "Next";
+            next_page_button.UseVisualStyleBackColor = true;
+            next_page_button.Click += NextPageButtonClick;
+            // 
             // Only_active
             // 
             Only_active.AutoSize = true;
             Only_active.Font = new Font("Yu Gothic UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 238);
-            Only_active.Location = new Point(12, 425);
+            Only_active.Location = new Point(12, 457);
             Only_active.Name = "Only_active";
             Only_active.Size = new Size(139, 24);
             Only_active.TabIndex = 16;
@@ -103,7 +140,7 @@
             // 
             // clearButton
             // 
-            clearButton.Location = new Point(12, 469);
+            clearButton.Location = new Point(10, 487);
             clearButton.Name = "clearButton";
             clearButton.Size = new Size(75, 23);
             clearButton.TabIndex = 15;
@@ -113,7 +150,7 @@
             // 
             // searchButton
             // 
-            searchButton.Location = new Point(99, 469);
+            searchButton.Location = new Point(99, 487);
             searchButton.Name = "searchButton";
             searchButton.Size = new Size(75, 23);
             searchButton.TabIndex = 14;
@@ -129,7 +166,7 @@
             deviceTypeBox.Controls.Add(Mobile_radio);
             deviceTypeBox.Controls.Add(PC_radio);
             deviceTypeBox.Font = new Font("Yu Gothic UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 238);
-            deviceTypeBox.Location = new Point(12, 59);
+            deviceTypeBox.Location = new Point(10, 100);
             deviceTypeBox.Name = "deviceTypeBox";
             deviceTypeBox.RightToLeft = RightToLeft.No;
             deviceTypeBox.Size = new Size(162, 124);
@@ -190,18 +227,17 @@
             fraze_label.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             fraze_label.AutoSize = true;
             fraze_label.Font = new Font("Yu Gothic UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 238);
-            fraze_label.Location = new Point(12, 12);
+            fraze_label.Location = new Point(12, 53);
             fraze_label.Name = "fraze_label";
             fraze_label.Size = new Size(33, 15);
             fraze_label.TabIndex = 13;
             fraze_label.Text = "Fraze";
-            fraze_label.Click += fraze_label_Click;
             // 
             // frazeBox
             // 
             frazeBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             frazeBox.BackColor = Color.LightGray;
-            frazeBox.Location = new Point(12, 30);
+            frazeBox.Location = new Point(10, 71);
             frazeBox.Name = "frazeBox";
             frazeBox.Size = new Size(221, 23);
             frazeBox.TabIndex = 12;
@@ -214,7 +250,7 @@
             dateBox.Controls.Add(Yestarday_radio);
             dateBox.Controls.Add(Today_radio);
             dateBox.Font = new Font("Yu Gothic UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 238);
-            dateBox.Location = new Point(12, 286);
+            dateBox.Location = new Point(12, 318);
             dateBox.Name = "dateBox";
             dateBox.Size = new Size(162, 133);
             dateBox.TabIndex = 11;
@@ -231,6 +267,7 @@
             Month_radio.TabStop = true;
             Month_radio.Text = "This month";
             Month_radio.UseVisualStyleBackColor = true;
+            Month_radio.Click += date_CheckedChanged;
             // 
             // Week_radio
             // 
@@ -242,6 +279,7 @@
             Week_radio.TabStop = true;
             Week_radio.Text = "This week";
             Week_radio.UseVisualStyleBackColor = true;
+            Week_radio.Click += date_CheckedChanged;
             // 
             // Yestarday_radio
             // 
@@ -253,7 +291,7 @@
             Yestarday_radio.TabStop = true;
             Yestarday_radio.Text = "Yestarday";
             Yestarday_radio.UseVisualStyleBackColor = true;
-            Yestarday_radio.CheckedChanged += radioButton2_CheckedChanged;
+            Yestarday_radio.Click += date_CheckedChanged;
             // 
             // Today_radio
             // 
@@ -265,33 +303,31 @@
             Today_radio.TabStop = true;
             Today_radio.Text = "Today";
             Today_radio.UseVisualStyleBackColor = true;
-            Today_radio.CheckedChanged += device_CheckedChanged;
+            Today_radio.CheckedChanged += date_CheckedChanged;
             // 
             // givewaytype_label
             // 
             givewaytype_label.AutoSize = true;
-            givewaytype_label.Location = new Point(12, 239);
+            givewaytype_label.Location = new Point(10, 271);
             givewaytype_label.Name = "givewaytype_label";
             givewaytype_label.Size = new Size(77, 15);
             givewaytype_label.TabIndex = 10;
             givewaytype_label.Text = "Giveway type";
-            givewaytype_label.Click += givewaytype_label_Click;
             // 
             // giveawayBox
             // 
             giveawayBox.BackColor = Color.LightGray;
             giveawayBox.FormattingEnabled = true;
-            giveawayBox.Location = new Point(12, 257);
+            giveawayBox.Location = new Point(10, 289);
             giveawayBox.Name = "giveawayBox";
             giveawayBox.Size = new Size(121, 23);
             giveawayBox.TabIndex = 9;
-            giveawayBox.SelectedIndexChanged += comboBox2_SelectedIndexChanged;
             // 
             // platform_label
             // 
             platform_label.AutoSize = true;
             platform_label.Font = new Font("Yu Gothic UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 238);
-            platform_label.Location = new Point(12, 195);
+            platform_label.Location = new Point(12, 227);
             platform_label.Name = "platform_label";
             platform_label.Size = new Size(52, 15);
             platform_label.TabIndex = 8;
@@ -302,11 +338,10 @@
             platformBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             platformBox.BackColor = Color.LightGray;
             platformBox.FormattingEnabled = true;
-            platformBox.Location = new Point(12, 213);
+            platformBox.Location = new Point(10, 245);
             platformBox.Name = "platformBox";
             platformBox.Size = new Size(186, 23);
             platformBox.TabIndex = 7;
-            platformBox.SelectedIndexChanged += comboBox1_SelectedIndexChanged_1;
             // 
             // Deals_list
             // 
@@ -341,16 +376,6 @@
             ResumeLayout(false);
         }
 
-        private void VR_radio_CheckedChanged(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void PC_radio_CheckedChanged(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
 
         private SplitContainer splitContainer1;
@@ -374,5 +399,8 @@
         private RadioButton PC_radio;
         private FlowLayoutPanel Deals_list;
         private CheckBox Only_active;
+        private Label page_counter;
+        private Button previous_page_button;
+        private Button next_page_button;
     }
 }
