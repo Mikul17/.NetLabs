@@ -34,12 +34,9 @@ public class Deal
     public DateTime? publicationDate => ConvertStringToDate(publicationDateString);
     [BsonElement]
     public DateTime? endDate => ConvertStringToDate(endDateString);
-    
-    [BsonIgnore]
-    public string status { get; set; }
-    [BsonElement]
-    
-    public bool isActive => status.Equals("Active", StringComparison.OrdinalIgnoreCase);
+
+    [BsonElement] 
+    public bool isActive => endDate < DateTime.Today;
     
     private DateTime? ConvertStringToDate(string dateString)
     {
