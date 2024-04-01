@@ -70,6 +70,7 @@ namespace Lab2
             dateTime = new DateTime();
             onlyActive = false;
             selectedDate = null;
+            selectedDevice = null;
         }
         private void resetChoices()
         {
