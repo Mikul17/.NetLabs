@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "Lab2Gui": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "BASE_URL": "https://www.gamerpower.com/api",
+        "COLLECTION": "Deals",
+        "DATABASE": "Lab2",
+        "DB_URI": "mongodb+srv://254171:3HHkD07LRhH3fWHc@studia.xa0pi7k.mongodb.net/"
+      }
+    }
+  }
+}
