@@ -14,7 +14,7 @@ namespace Lab2
         private string platform = "";
         private string type = "";
         private DateTime dateTime;
-        private bool onlyActive = false;
+        private bool onlyActive;
         private RadioButton selectedDevice;
         private RadioButton selectedDate;
         
@@ -36,9 +36,9 @@ namespace Lab2
         }
         private async void searchButton_click(object sender, EventArgs e)
         {
-            string fraze = frazeBox.Text;
+            fraze = frazeBox.Text;
             dateTime = DateCheckBoxValue();
-            bool onlyActive = Only_active.Checked;
+            onlyActive = Only_active.Checked;
 
             foreach (var control in deviceTypeBox.Controls)
             {
