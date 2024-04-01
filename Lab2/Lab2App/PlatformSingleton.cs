@@ -28,7 +28,7 @@ public class PlatformSingleton
         VrPlatforms = new HashSet<string>() {"VR"};
         DealType = new HashSet<string>()
         {
-            "DLC", "Game", "Beta"
+            "DLC", "Game", "Early Access"
         };
     }
 

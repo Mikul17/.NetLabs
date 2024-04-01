@@ -17,7 +17,6 @@ namespace Lab2
         private bool onlyActive;
         private RadioButton selectedDevice;
         private RadioButton selectedDate;
-        
         private int currentPage = 1;
         private int pageSize = 10;
         private long maxPages = 0;
@@ -37,20 +36,13 @@ namespace Lab2
         private async void searchButton_click(object sender, EventArgs e)
         {
             fraze = frazeBox.Text;
+            deviceType = selectedDevice==null ? "" : selectedDevice.Text;
+            platform = platformBox.Text;
+            type = giveawayBox.Text == string.Empty ? "" : giveawayBox.Text;
             dateTime = DateCheckBoxValue();
             onlyActive = Only_active.Checked;
-
-            foreach (var control in deviceTypeBox.Controls)
-            {
-                if (control is RadioButton radio)
-                {
-                    if (radio.Checked)
-                    {
-                       deviceType = radio.Text;
-                    }
-                }
-            }
-
+            
+            
             
             currentPage = 1;
             await UpdatePageLabel();
