@@ -46,7 +46,7 @@ public static class Solver
 
             Thread thread = new Thread(() => 
             {
-                //Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} started | rows from {startRow} to {endRow}");
+                Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} started | rows from {startRow} to {endRow}");
                 for (int i = startRow; i < endRow; i++)
                 {
                     for (int j = 0; j < b.column; j++)
@@ -81,7 +81,7 @@ public static class Solver
             int startRow = i * rowsPerThread;
             int endRow = Math.Min(startRow + rowsPerThread, a.row);
 
-            //Console.WriteLine($"Parallel thread {Task.CurrentId} started | rows from {startRow} to {endRow}");
+            Console.WriteLine($"Parallel thread {Task.CurrentId} started | rows from {startRow} to {endRow}");
 
             for (int row = startRow; row < endRow; row++)
             {
