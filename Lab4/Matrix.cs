@@ -7,8 +7,6 @@
         public int row { get;}
         public int column { get;}
         
-        public int seed { get; }
-        
         public volatile int[,] matrix;
 
         public Matrix(int row, int column)
