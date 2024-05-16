@@ -69,6 +69,7 @@
     // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
     public async Task AddGame()
     {
+        Game.Rating = 0;
         DB.Game.Add(Game);
         await DB.SaveChangesAsync();
         NavigationManager.NavigateTo("/games");

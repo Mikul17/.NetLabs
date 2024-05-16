@@ -12,9 +12,9 @@ namespace Lab5.Components.Game
         public string Platform { get; set; }
         public string Developer { get; set; }  = string.Empty;
 
-        public int? Rating { get; set; } = 0;
+        public int? Rating { get; set; }
 
-        public int RatingCount { get; set; } = 0;
+        public int RatingCount { get; set; }
         
         [DataType(DataType.Date)]
         public DateOnly ReleaseDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);

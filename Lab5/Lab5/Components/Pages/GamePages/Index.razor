@@ -3,6 +3,9 @@
 @inject Lab5.Data.ApplicationDbContext DB
 @using Lab5.Components.Game
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
+@attribute [StreamRendering]
+@rendermode InteractiveServer
 
 <PageTitle>Games list</PageTitle>
 
@@ -16,13 +19,19 @@
         <p class="text-muted">Please log in to create a new game.</p>
     </NotAuthorized>
 </AuthorizeView>
+<div>
+    <button class="btn btn-primary mb-1 mt-1 w-auto" onclick="@SortByTitle">Sort by title</button>
+    <button class="btn btn-primary mb-1 mt-1 w-auto" onclick="@SortByDate">Sort by release date</button>
+    <button class="btn btn-primary mb-1 mt-1 w-auto" onclick="@SortByRating">Sort by rating</button>
+</div>
 
-<QuickGrid Class="table text-center align-middle" Items="DB.Game">
-    <PropertyColumn Property="game => game.Title" />
+<QuickGrid Class="table text-center align-middle" Items="games">
+    <PropertyColumn Sortable="true" Property="game => game.Title" />
     <PropertyColumn Property="game => game.Genre" />
     <PropertyColumn Property="game => game.Platform" />
     <PropertyColumn Property="game => game.Developer" />
-    <PropertyColumn Property="game => game.ReleaseDate" />
+    <PropertyColumn Sortable="true" Property="game => game.ReleaseDate" />  
+    <PropertyColumn Sortable="true" Property="game => game.Rating"/>
 
     <TemplateColumn Context="game">
         <AuthorizeView>
@@ -44,3 +53,62 @@
         text-align: center;
     }
 </style>
+
+@code
+{
+    private IQueryable<Game> games;
+    private bool titleSorting = false;
+    private bool releaseDateSorting = false;
+    private bool ratingSorting = false;
+    
+    protected override void OnInitialized()
+    {
+        games = DB.Game.AsQueryable();
+    }
+    
+    
+    private void SortByTitle()
+    {
+        if (titleSorting)
+        {
+            games = DB.Game.OrderByDescending(g => g.Title);
+            titleSorting = false;
+        }
+        else
+        {
+            games = DB.Game.OrderBy(g => g.Title);
+            titleSorting = true;
+        }
+        StateHasChanged();
+    }
+
+    private void SortByDate()
+    {
+        if (releaseDateSorting)
+        {
+            games = DB.Game.OrderByDescending(g => g.ReleaseDate);
+            releaseDateSorting = false;
+        }
+        else
+        {
+            games = DB.Game.OrderBy(g => g.ReleaseDate);
+            releaseDateSorting = true;
+        }
+        StateHasChanged();
+    }
+
+    private void SortByRating()
+    {
+        if (ratingSorting)
+        {
+            games = DB.Game.OrderByDescending(g => g.Rating);
+            ratingSorting = false;
+        }
+        else
+        {
+            games = DB.Game.OrderBy(g => g.Rating);
+            ratingSorting = true;
+        }
+        StateHasChanged();
+    }
+}

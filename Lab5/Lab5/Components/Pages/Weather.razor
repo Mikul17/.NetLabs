@@ -1,5 +1,6 @@
 ﻿@page "/weather"
 @attribute [StreamRendering]
+@rendermode InteractiveServer
 
 <PageTitle>Weather</PageTitle>
 
@@ -13,31 +14,39 @@
 }
 else
 {
+    <p>Cold days: @coldDays.Count</p>
+    <button class="btn btn-primary mb-2" @onclick="ColdDaysFilter">Filter</button>
+    <button class="btn btn-primary mb-2" @onclick="Reset">Reset</button>
+    <input class="form-control" @oninput="@Input"/>
     <table class="table">
         <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
+        <tr>
+            <th>Date</th>
+            <th>Temp. (C)</th>
+            <th>Temp. (F)</th>
+            <th>Summary</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
+        @foreach (var forecast in forecasts)
+        {
+            <tr>
+                <td>@forecast.Date.ToShortDateString()</td>
+                <td>@forecast.TemperatureC</td>
+                <td>@forecast.TemperatureF</td>
+                <td>@forecast.Summary</td>
+            </tr>
+        }
         </tbody>
     </table>
 }
 
 @code {
     private WeatherForecast[]? forecasts;
+    private List<WeatherForecast> warmDays = new List<WeatherForecast>();
+    private List<WeatherForecast> coldDays = new List<WeatherForecast>();
+    private WeatherForecast[]? previousState;
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -46,12 +55,24 @@ else
 
         var startDate = DateOnly.FromDateTime(DateTime.Now);
         var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        forecasts = Enumerable.Range(1, 10).Select(index => new WeatherForecast
         {
             Date = startDate.AddDays(index),
             TemperatureC = Random.Shared.Next(-20, 55),
             Summary = summaries[Random.Shared.Next(summaries.Length)]
         }).ToArray();
+        foreach (var fc in forecasts)
+        {
+            if (fc.TemperatureC > 15){
+                warmDays.Add(fc);
+        }
+        else
+        {
+            coldDays.Add(fc);
+        }
+    }
+
+        previousState = forecasts;
     }
 
     private class WeatherForecast
@@ -60,5 +81,37 @@ else
         public int TemperatureC { get; set; }
         public string? Summary { get; set; }
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+
+    private void ColdDaysFilter()
+    {
+        forecasts = coldDays.ToArray();
+    }
+
+    private void Reset()
+    {
+        forecasts = previousState;
+    }
+
+    private void Input(ChangeEventArgs arg)
+    {
+        string text = arg.Value.ToString();
+        if (text.Length == 0)
+        {
+            forecasts = previousState;
+            return;
+        }
+
+        List<WeatherForecast> ans = new List<WeatherForecast>();
+
+        foreach (var fc in forecasts)
+        {
+            if (fc.Summary.ToLower().Contains(text))
+            {
+                ans.Add(fc);
+            }
+        }
+
+        forecasts = ans.ToArray();
     }
 }
