@@ -1,0 +1,46 @@
+﻿@page "/games"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject Lab5.Data.ApplicationDbContext DB
+@using Lab5.Components.Game
+@using Microsoft.AspNetCore.Authorization
+
+<PageTitle>Games list</PageTitle>
+
+<h1>Games list</h1>
+
+<AuthorizeView>
+    <Authorized>
+        <NavLink class="btn btn-primary mb-3" href="games/create">Create New</NavLink>
+    </Authorized>
+    <NotAuthorized>
+        <p class="text-muted">Please log in to create a new game.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+<QuickGrid Class="table text-center align-middle" Items="DB.Game">
+    <PropertyColumn Property="game => game.Title" />
+    <PropertyColumn Property="game => game.Genre" />
+    <PropertyColumn Property="game => game.Platform" />
+    <PropertyColumn Property="game => game.Developer" />
+    <PropertyColumn Property="game => game.ReleaseDate" />
+
+    <TemplateColumn Context="game">
+        <AuthorizeView>
+            <Authorized>
+                <NavLink class="btn btn-primary mb-1 mt-1 w-auto" href="@($"games/details?id={game.Id}")">Details</NavLink>
+                <NavLink class="btn btn-primary mb-1 mt-1 w-auto" href="@($"games/edit?id={game.Id}")">Edit</NavLink>
+                <NavLink class="btn btn-primary mb-1 mt-1 w-auto" href="@($"games/delete?id={game.Id}")">Delete</NavLink>
+            </Authorized>
+            <NotAuthorized>
+                <NavLink class="btn btn-primary mb-1 mt-1 w-auto" href="@($"games/details?id={game.Id}")">Details</NavLink>
+            </NotAuthorized>
+        </AuthorizeView>
+    </TemplateColumn>
+</QuickGrid>
+
+<style>
+    .table td, .table th {
+        vertical-align: middle;
+        text-align: center;
+    }
+</style>

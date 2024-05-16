@@ -1,0 +1,108 @@
+﻿@page "/games/details"
+@inject Lab5.Data.ApplicationDbContext DB
+@using Lab5.Components.Game
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div class="container">
+    @if (game is null)
+    {
+    <p><em>Loading...</em></p>
+    }
+    else {
+    <div class="row">
+        <div class="col-md-4">
+            <img src="@game.Image" alt="@game.Title" class="img-fluid" />
+        </div>
+        <div class="col-md-8">
+            <h4>@game.Title</h4>
+            <dl class="row">
+                <dt class="col-sm-4">Description</dt>
+                <dd class="col-sm-8">@game.Description</dd>
+                <dt class="col-sm-4">Genre</dt>
+                <dd class="col-sm-8">@game.Genre</dd>
+                <dt class="col-sm-4">Platform</dt>
+                <dd class="col-sm-8">@game.Platform</dd>
+                <dt class="col-sm-4">Developer</dt>
+                <dd class="col-sm-8">@game.Developer</dd>
+                <dt class="col-sm-4">Release Date</dt>
+                <dd class="col-sm-8">@game.ReleaseDate</dd>
+            </dl>
+            <AuthorizeView>
+                <Authorized>
+                    <div class="mt-4">
+                        <h5>Add a Rating</h5>
+                        <div class="form-group">
+                            <label for="rating">Rating (1-10)</label>
+                            <input type="number" id="rating" class="form-control" @bind-value="userRating" min="1" max="10" />
+                        </div>
+                        <button class="btn btn-success mt-2" disabled="@(!isEnabled)" @onclick="AddRating">Submit Rating</button>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+            <div class="mt-3">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/@ExtractYouTubeId(game.Trailer)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <AuthorizeView>
+                <Authorized>
+                    <div>
+                        <NavLink class="btn btn-primary mb-1 mt-1 w-auto" href="@($"/games/edit?id={game.Id}")">Edit</NavLink>
+                        <NavLink class="btn btn-primary mb-1 mt-1 w-auto" href="@($"/games")">Back to List</NavLink>
+                    </div>
+                </Authorized>
+                <NotAuthorized>
+                    <NavLink class="btn btn-primary mb-1 mt-1 w-auto" href="@($"/games")">Back to List</NavLink>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </div>
+    }
+</div>
+
+@code {
+    Game? game;
+    private int userRating;
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    public bool isEnabled = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        game = await DB.Game.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (game is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    private string ExtractYouTubeId(string url)
+    {
+        var uri = new Uri(url);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+        if (query.TryGetValue("v", out var videoId))
+        {
+            return videoId.First();
+        }
+        return uri.Segments.Last();
+    }
+
+    public async Task AddRating()
+    {
+        if (isEnabled && game != null)
+        {
+            isEnabled = false;  
+            game.RatingCount += 1;
+            game.Rating = ((game.Rating * (game.RatingCount - 1)) + userRating) / game.RatingCount;
+            DB.Game.Update(game);
+            await DB.SaveChangesAsync();
+            StateHasChanged();
+        }
+    }
+}
